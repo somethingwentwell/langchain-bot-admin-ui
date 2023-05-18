@@ -52,7 +52,9 @@ export default defineComponent({
                 sent: true
             });
             running.value = true;
-            scrollAreaRef.value.setScrollPercentage('vertical', 2)
+            if (scrollAreaRef.value) {
+                (scrollAreaRef.value as any)?.setScrollPercentage('vertical', 2)
+            }
             const response = await fetch(`${localStorage.getItem('chaturl')}/run`, {
               method: 'POST',
               headers: {
@@ -69,7 +71,9 @@ export default defineComponent({
                 name: 'InSource',
                 text: data.result,
             });
-            scrollAreaRef.value.setScrollPercentage('vertical', 2)
+            if (scrollAreaRef.value) {
+                (scrollAreaRef.value as any)?.setScrollPercentage('vertical', 2)
+            }
             running.value = false;
         };
         return {
