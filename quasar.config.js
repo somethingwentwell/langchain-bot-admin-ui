@@ -59,7 +59,10 @@ module.exports = configure(function (ctx) {
     // Full list of options: https://v2.quasar.dev/quasar-cli-webpack/quasar-config-js#Property%3A-build
     build: {
       vueRouterMode: 'hash', // available values: 'hash', 'history'
-
+      env: {
+        ADMIN_URL: process.env.ADMIN_URL || 'http://localhost:8100',
+        CHAT_URL: process.env.CHAT_URL || 'http://localhost:8000'
+      }
       // transpile: false,
       // publicPath: '/',
 

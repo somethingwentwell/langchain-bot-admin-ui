@@ -81,8 +81,10 @@ export default defineComponent({
     name: 'MainLayout',
     components: {},
     setup() {
-        let adminurl = ref(localStorage.getItem('adminurl') || 'http://localhost:8000');
-        let chaturl = ref(localStorage.getItem('chaturl') || 'http://localhost:8000');
+        localStorage.setItem('adminurl', process.env.ADMIN_URL);
+        localStorage.setItem('chaturl', process.env.CHAT_URL);
+        let adminurl = ref(localStorage.getItem('adminurl'));
+        let chaturl = ref(localStorage.getItem('chaturl'));
         const updateAdminUrl = () => {
             localStorage.setItem('adminurl', adminurl.value);
         };

@@ -20,12 +20,6 @@ type Env = {
   LC_API_URL: string
 }
 
-type Tools = {
-  docsimport: boolean,
-  zapiertool: boolean,
-  customtools: boolean
-}
-
 type Doc = {
   folder: string,
   subfolder: string,
@@ -39,11 +33,7 @@ type Docs = {
 export const useLcStore = defineStore('lcadmin', {
   state: () => ({
     envVar: {} as Env,
-    toolsVar: {
-      docsimport: false,
-      zapiertool: false,
-      customtools: false
-    } as Tools,
+    toolsVar: {} as Record<string, any>,
     docsVar: {} as Docs
   }),
   getters: {
@@ -81,11 +71,18 @@ export const useLcStore = defineStore('lcadmin', {
     },
     async getTools () {
       try {
-        const response = await fetch(`${localStorage.getItem('adminurl')}/toggle_tools`);
-        const data = await response.json();
-        this.toolsVar.docsimport = data.tools.includes('docsimport');
-        this.toolsVar.customtools = data.tools.includes('zapiertool');
-        this.toolsVar.customtools = data.tools.includes('customtools');
+        const response1 = await fetch(`${localStorage.getItem('adminurl')}/toggle_tools`);
+        const toggle_tools = await response1.json();
+        const response2 = await fetch(`${localStorage.getItem('adminurl')}/all_tools`);
+        const all_tools = await response2.json();
+        console.log(all_tools)
+        for (const tool of all_tools) {
+          console.log(tool)
+          this.toolsVar[tool] = false;
+          if (toggle_tools.tools.includes(tool)) {
+            this.toolsVar[tool] = true;
+          }
+        }
       } catch (error) {
         console.error('Error:', error);
       }
