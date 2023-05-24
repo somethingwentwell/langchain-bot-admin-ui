@@ -10,8 +10,8 @@ WORKDIR /app
 # # Install dependencies
 # RUN npm install
 
-# # Copy the rest of the application code to the container
-# COPY . .
+# Copy the rest of the application code to the container
+COPY . .
 
 # # Build the application
 # RUN npx quasar build
