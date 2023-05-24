@@ -62,6 +62,16 @@ module.exports = configure(function (ctx) {
       env: {
         ADMIN_URL: process.env.ADMIN_URL || 'http://localhost:8100',
         CHAT_URL: process.env.CHAT_URL || 'http://localhost:8000'
+      },
+      proxy: {
+        // proxy all requests starting with /run to jsonplaceholder
+        '/run': {
+          target: process.env.CHAT_URL,
+          changeOrigin: true,
+          pathRewrite: {
+            '^/run': ''
+          }
+        }
       }
       // transpile: false,
       // publicPath: '/',
@@ -91,7 +101,17 @@ module.exports = configure(function (ctx) {
         type: 'http'
       },
       port: 8080,
-      open: true // opens browser window automatically
+      open: true, // opens browser window automatically
+      proxy: {
+        // proxy all requests starting with /run to jsonplaceholder
+        '/run': {
+          target: process.env.CHAT_URL,
+          changeOrigin: true,
+          pathRewrite: {
+            '^/run': ''
+          }
+        }
+      }
     },
 
     // https://v2.quasar.dev/quasar-cli-webpack/quasar-config-js#Property%3A-framework
