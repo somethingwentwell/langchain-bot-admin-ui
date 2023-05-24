@@ -58,7 +58,8 @@ export default defineComponent({
             const response = await fetch(`${localStorage.getItem('chaturl')}/run`, {
               method: 'POST',
               headers: {
-                'Content-Type': 'application/json'
+                'Content-Type': 'application/json',
+                'Access-Control-Allow-Origin': '*'
               },
               body: JSON.stringify({
                     'text': message.value,

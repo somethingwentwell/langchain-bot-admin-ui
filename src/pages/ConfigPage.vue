@@ -242,7 +242,10 @@ export default defineComponent({
       formdata.append('file', file);
       const response = await fetch(`${localStorage.getItem('adminurl')}/upload/${folder}/${subfolder.value}`, {
         method: 'POST',
-        body: formdata
+        body: formdata,
+        headers: {
+          'Access-Control-Allow-Origin': '*'
+        }
       });
       uploadfile.value = {};
       subfolder.value = null;
@@ -257,7 +260,8 @@ export default defineComponent({
       const response = await fetch(`${localStorage.getItem('adminurl')}/service-ops/`, {
         method: 'POST',
         headers: {
-          'Content-Type': 'application/json'
+          'Content-Type': 'application/json',
+          'Access-Control-Allow-Origin': '*'
         },
         body: '{"action": "logs"}'
       });
@@ -273,7 +277,8 @@ export default defineComponent({
       const response = await fetch(`${localStorage.getItem('adminurl')}/service-ops/`, {
         method: 'POST',
         headers: {
-          'Content-Type': 'application/json'
+          'Content-Type': 'application/json',
+          'Access-Control-Allow-Origin': '*'
         },
         body: `{"action": "${action}"}`
       });

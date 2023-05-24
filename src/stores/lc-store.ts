@@ -45,7 +45,11 @@ export const useLcStore = defineStore('lcadmin', {
   actions: {
     async getEnv () {
       try {
-        const response = await fetch(`${localStorage.getItem('adminurl')}/env`);
+        const response = await fetch(`${localStorage.getItem('adminurl')}/env`, {
+          headers: {
+            'Access-Control-Allow-Origin': '*'
+          }
+        });
         const data = await response.json();
         this.envVar = data;
       } catch (error) {
@@ -57,7 +61,8 @@ export const useLcStore = defineStore('lcadmin', {
         const response = await fetch(`${localStorage.getItem('adminurl')}/env`, {
           method: 'PUT',
           headers: {
-            'Content-Type': 'application/json'
+            'Content-Type': 'application/json',
+            'Access-Control-Allow-Origin': '*'
           },
           body: JSON.stringify(this.envVar)
         });
@@ -71,9 +76,17 @@ export const useLcStore = defineStore('lcadmin', {
     },
     async getTools () {
       try {
-        const response1 = await fetch(`${localStorage.getItem('adminurl')}/toggle_tools`);
+        const response1 = await fetch(`${localStorage.getItem('adminurl')}/toggle_tools`, {
+          headers: {
+            'Access-Control-Allow-Origin': '*'
+          }
+        });
         const toggle_tools = await response1.json();
-        const response2 = await fetch(`${localStorage.getItem('adminurl')}/all_tools`);
+        const response2 = await fetch(`${localStorage.getItem('adminurl')}/all_tools`, {
+          headers: {
+            'Access-Control-Allow-Origin': '*'
+          }
+        });
         const all_tools = await response2.json();
         console.log(all_tools)
         for (const tool of all_tools) {
@@ -88,7 +101,11 @@ export const useLcStore = defineStore('lcadmin', {
       }
     },
     async updateTools () {
-      await fetch(`${localStorage.getItem('adminurl')}/disable_all_tools`)
+      await fetch(`${localStorage.getItem('adminurl')}/disable_all_tools`, {
+        headers: {
+          'Access-Control-Allow-Origin': '*'
+        }
+      })
       const tools = Object.entries(this.toolsVar);
       for (const [toolName, toolValue] of tools) {
         if (toolValue) {
@@ -96,7 +113,8 @@ export const useLcStore = defineStore('lcadmin', {
             const response = await fetch(`${localStorage.getItem('adminurl')}/toggle_tools`, {
               method: 'POST',
               headers: {
-                'Content-Type': 'application/json'
+                'Content-Type': 'application/json',
+                'Access-Control-Allow-Origin': '*'
               },
               body: JSON.stringify({ name: toolName })
             });
@@ -110,7 +128,11 @@ export const useLcStore = defineStore('lcadmin', {
     },
     async getFiles () {
       try {
-        const response = await fetch(`${localStorage.getItem('adminurl')}/readall`);
+        const response = await fetch(`${localStorage.getItem('adminurl')}/readall`, {
+          headers: {
+            'Access-Control-Allow-Origin': '*'
+          }
+        });
         const data = await response.json();
         this.docsVar = data;
       } catch (error) {
