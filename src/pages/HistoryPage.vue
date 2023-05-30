@@ -31,7 +31,7 @@ export default defineComponent({
         const session_ids = ref([] as any[]);
         let conversation = ref([] as any[]);
         const getSessionIds = async () => {
-            const response = await fetch(`${localStorage.getItem('chaturl')}/session_ids`, {
+            const response = await fetch(`${localStorage.getItem('adminurl')}/session_ids`, {
               method: 'GET'
             });
             const data = await response.json();
@@ -39,7 +39,7 @@ export default defineComponent({
         };
 
         const getHistory = async () => {
-            const response = await fetch(`${localStorage.getItem('chaturl')}/message_store/${session_id.value}`, {
+            const response = await fetch(`${localStorage.getItem('adminurl')}/message_store/${session_id.value}`, {
               method: 'GET'
             });
             conversation.value = await response.json();

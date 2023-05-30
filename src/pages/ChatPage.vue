@@ -1,7 +1,16 @@
 <template>
     <q-page>
         <div class="q-pa-md row justify-center">
-            <q-scroll-area style="height: 70vh; width: 100%; max-width: 600px;"
+            <q-input
+                style="width: 100%; max-width: 600px;"
+                v-model="sid"
+                label="Session ID"
+                placeholder="Session ID"
+            >
+            </q-input>
+        </div>
+        <div class="q-pa-md row justify-center">
+            <q-scroll-area style="height: 60vh; width: 100%; max-width: 600px;"
                 ref="scrollAreaRef"
             >
                 <q-chat-message
@@ -11,6 +20,7 @@
                     :name="message.name"
                     :text="[message.text]"
                     :sent="message.sent"
+                    :bg-color="message.color"
                 />
                 <q-chat-message name="InSource" v-if="running">
                     <q-spinner-dots size="2rem" />
@@ -35,7 +45,8 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, ref } from 'vue';
+import { SIGCHLD } from 'constants';
+import { defineComponent, ref, onMounted} from 'vue';
 
 export default defineComponent({
     name: 'ChatPage',
@@ -45,44 +56,96 @@ export default defineComponent({
         let message = ref('');
         let running = ref(false)
         const scrollAreaRef = ref(null)
-        const sendMessage = async () => {
-            conversation.value.push({
-                name: 'me',
+        let sid = ref("1")
+
+        const ws = new WebSocket('ws://localhost:8000/ws');
+
+        const sendMessage = () => {
+            const payload = {
+                id: 'ws-test-' + sid.value,
                 text: message.value,
-                sent: true
-            });
-            running.value = true;
-            if (scrollAreaRef.value) {
-                (scrollAreaRef.value as any)?.setScrollPercentage('vertical', 2)
+            };
+            if (ws.readyState === WebSocket.OPEN) {
+                ws.send(JSON.stringify(payload));
+                conversation.value.push({
+                    name: 'me',
+                    text: message.value,
+                    sent: true
+                });
+                message.value = '';
+                running.value = true;
+            } else {
+                console.error('WebSocket connection is closed');
             }
-            const response = await fetch(`${localStorage.getItem('chaturl')}/run`, {
-              method: 'POST',
-              headers: {
-                'Content-Type': 'application/json',
-                'Access-Control-Allow-Origin': '*'
-              },
-              body: JSON.stringify({
-                    'text': message.value,
-                    'id': 'admin-ui-test'
-                })
-            });
-            const data = await response.json();
-            message.value = '';
-            conversation.value.push({
-                name: 'InSource',
-                text: data.result,
-            });
-            if (scrollAreaRef.value) {
-                (scrollAreaRef.value as any)?.setScrollPercentage('vertical', 2)
-            }
-            running.value = false;
         };
+
+        onMounted(() => {
+            ws.onopen = () => {
+                console.log('WebSocket connected');
+            };
+
+            ws.onmessage = (event) => {
+                
+                let res = JSON.parse(event.data);
+                console.log(event.data)
+                if (res.result) {
+                    conversation.value.push({
+                        name: 'InSource',
+                        text: res.result,
+                    });
+                    if (scrollAreaRef.value) {
+                        (scrollAreaRef.value as any)?.setScrollPercentage('vertical', 2);
+                    }
+                }
+                if (res.callback) {
+                    if (res.callback === 'on_agent_action') {
+                        conversation.value.push({
+                            name: 'InSource',
+                            text: res.thought[2],
+                            color: 'orange'
+                        });
+                    }
+                    if (res.callback === 'on_agent_finish') {
+                        if (res.thought[1] != '') {
+                            conversation.value.push({
+                                name: 'InSource',
+                                text: res.thought[1],
+                                color: 'orange'
+                            });
+                        }
+                        running.value = false;
+                    }
+
+                    if (scrollAreaRef.value) {
+                        (scrollAreaRef.value as any)?.setScrollPercentage('vertical', 2);
+                    }
+                }
+                if (res.error) {
+                    conversation.value.push({
+                        name: 'InSource',
+                        text: res.error,
+                        color: 'red'
+                    });
+                    if (scrollAreaRef.value) {
+                        (scrollAreaRef.value as any)?.setScrollPercentage('vertical', 2);
+                    }
+                    running.value = false;
+                }
+                
+            };
+
+            ws.onclose = () => {
+                console.log('WebSocket disconnected');
+            };
+        });
+
         return {
             conversation,
             message,
             sendMessage,
             running,
-            scrollAreaRef
+            scrollAreaRef,
+            sid
         };
     }
 });

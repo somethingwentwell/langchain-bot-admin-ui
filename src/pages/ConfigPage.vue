@@ -59,7 +59,7 @@
         >
           <div class="q-pa-md q-gutter-y-sm column">
             <div v-for="(value, key) in lc.toolsVar" :key="key">
-              {{ key }}<q-toggle v-model="lc.toolsVar[key]" />
+              <q-toggle v-model="lc.toolsVar[key]" :label="key"></q-toggle>
             </div>
           </div>
           
@@ -141,6 +141,21 @@
                 color="secondary"
                 label="Open Zapier NLA"
                 @click="openZapier"
+              />
+            </div>
+            <div class="q-pa-md" v-if="lc.toolsVar['chatgptplugins']">
+              <q-input
+                label="ChatGPT Plugins"
+                class="q-py-md"
+                v-model="chatgptPlugins"
+                outlined
+                autogrow
+              />
+
+              <q-btn
+                color="secondary"
+                label="Save Plugins"
+                @click="saveChatGPTPlugins(chatgptPlugins)"
               />
             </div>
             <q-btn label="Save" @click="saveTools()" class="q-mt-md" />
@@ -286,6 +301,39 @@ export default defineComponent({
       return;
     }
 
+    let chatgptPlugins = ref('');
+
+    let getGhatgptPlugins = async () => {
+      const response = await fetch(`${localStorage.getItem('adminurl')}/chatgptplugins/`, {
+        method: 'GET',
+        headers: {
+          'Content-Type': 'application/json',
+          'Access-Control-Allow-Origin': '*'
+        }
+      });
+      chatgptPlugins.value = await response.json();
+
+    }
+
+    getGhatgptPlugins();
+
+    const saveChatGPTPlugins = async (plugins: string) => {
+      Loading.show()
+      console.log(plugins)
+      plugins = plugins.replace(/\n/g, '\\n');
+      console.log(plugins)
+      const response = await fetch(`${localStorage.getItem('adminurl')}/chatgptplugins/`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'Access-Control-Allow-Origin': '*'
+        },
+        body: `{"plugins": "${plugins}"}`
+      });
+      Loading.hide()
+      alert('Saved')
+    }
+
     const saveTools = async () => {
       Loading.show()
       lc.value.updateTools();
@@ -308,7 +356,9 @@ export default defineComponent({
       logs,
       getLogs,
       saveTools,
-      ops
+      ops,
+      chatgptPlugins,
+      saveChatGPTPlugins
     };
   }
 });
