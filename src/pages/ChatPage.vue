@@ -58,7 +58,8 @@ export default defineComponent({
         const scrollAreaRef = ref(null)
         let sid = ref("1")
 
-        const ws = new WebSocket(`ws://${localStorage.getItem('chaturl')}/ws`);
+        const chatUrl = localStorage.getItem('chaturl')?.replace(/^(https?:\/\/)/, '');
+        const ws = new WebSocket(`ws://${chatUrl}/ws`);
 
         const sendMessage = () => {
             const payload = {
