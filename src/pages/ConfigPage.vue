@@ -166,20 +166,31 @@
           title="Start InSource"
           icon="add_comment"
         >
-          <q-btn-group spread>
+          <!-- <q-btn-group spread>
             <q-btn color="primary" label="Start" icon="start" @click="ops('start')" />
             <q-btn color="secondary" label="Restart" icon="restart_alt" @click="ops('restart')" />
             <q-btn color="red" label="Stop" icon="stop" @click="ops('stop')" />
+          </q-btn-group> -->
+          <q-btn-group spread>
+            <q-btn color="secondary" label="Restart InSource Server" icon="restart_alt" @click="restart()" />
           </q-btn-group>
-          <q-input
+          <!-- <q-input
             class="q-pa-md"
             type="textarea"
             rows="15"
             v-model="logs"
             outlined
             label="Logs"
-          />
-          <q-btn label="Refresh Log" icon="refresh"  @click="getLogs()" />
+          /> -->
+          <!-- <q-btn label="Refresh Log" icon="refresh"  @click="getLogs()" /> -->
+          <div class="q-py-md">
+            <q-chip v-if="serverStatus" color="teal" text-color="white" icon="done">
+              Server Status: Ready
+            </q-chip>
+            <q-chip v-if="!serverStatus" color="orange" text-color="white" icon="refresh">
+              Server Status: Not Ready
+            </q-chip>
+          </div>
         </q-step>
 
         <template v-slot:navigation>
@@ -271,33 +282,48 @@ export default defineComponent({
       window.open('https://nla.zapier.com/get-started/', '_blank')
     }
 
-    const getLogs = async () => {
-      const response = await fetch(`${localStorage.getItem('adminurl')}/service-ops/`, {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-          'Access-Control-Allow-Origin': '*'
-        },
-        body: '{"action": "logs"}'
-      });
-      let res = await response.json();
-      let logsArr = res.result.stdout.split('\n');
-      let lastTenLogs = logsArr.slice(-10).join('\n');
-      logs.value = lastTenLogs;
+    // const getLogs = async () => {
+    //   const response = await fetch(`${localStorage.getItem('adminurl')}/service-ops/`, {
+    //     method: 'POST',
+    //     headers: {
+    //       'Content-Type': 'application/json',
+    //       'Access-Control-Allow-Origin': '*'
+    //     },
+    //     body: '{"action": "logs"}'
+    //   });
+    //   let res = await response.json();
+    //   let logsArr = res.result.stdout.split('\n');
+    //   let lastTenLogs = logsArr.slice(-10).join('\n');
+    //   logs.value = lastTenLogs;
       
-      return lastTenLogs;
-    }
+    //   return lastTenLogs;
+    // }
 
-    const ops = async (action: string) => {
-      const response = await fetch(`${localStorage.getItem('adminurl')}/service-ops/`, {
-        method: 'POST',
+    // const ops = async (action: string) => {
+    //   const response = await fetch(`${localStorage.getItem('adminurl')}/service-ops/`, {
+    //     method: 'POST',
+    //     headers: {
+    //       'Content-Type': 'application/json',
+    //       'Access-Control-Allow-Origin': '*'
+    //     },
+    //     body: `{"action": "${action}"}`
+    //   });
+    //   alert(action + 'Completed');
+    //   return;
+    // }
+
+    const restart = async () => {
+      const response = await fetch(`${localStorage.getItem('adminurl')}/restart_chat_server/`, {
+        method: 'GET',
         headers: {
           'Content-Type': 'application/json',
           'Access-Control-Allow-Origin': '*'
-        },
-        body: `{"action": "${action}"}`
+        }
       });
-      alert(action + 'Completed');
+      const data = await response.json();
+      alert(data.status);
+      serverStatus.value = false;
+      startInterval();
       return;
     }
 
@@ -341,7 +367,39 @@ export default defineComponent({
       alert('Saved')
     }
 
-    getLogs();
+    // getLogs();
+
+
+    let serverStatus = ref(false)
+
+    let intervalId: any;
+
+    const startInterval = () => {
+      intervalId = setInterval(async () => {
+        const response = await fetch(`${localStorage.getItem('adminurl')}/chat_server_status/`, {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+            'Access-Control-Allow-Origin': '*'
+          },
+          body: JSON.stringify({
+            url: localStorage.getItem('chaturl')
+          })
+        });
+        const data = await response.json();
+        console.log(data.status);
+        if (data.status === 'Ready') {
+          serverStatus.value = true;
+          stopInterval();
+        }
+      }, 5000);
+    }
+
+    const stopInterval = () => {
+      clearInterval(intervalId);
+    }    
+
+    startInterval();
 
     return { 
       step,
@@ -354,11 +412,11 @@ export default defineComponent({
       subfolder,
       openZapier,
       logs,
-      getLogs,
       saveTools,
-      ops,
+      restart,
       chatgptPlugins,
-      saveChatGPTPlugins
+      saveChatGPTPlugins,
+      serverStatus
     };
   }
 });
