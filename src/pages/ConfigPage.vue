@@ -374,8 +374,6 @@ export default defineComponent({
         body: `{"plugins": "${plugins}"}`
       });
       Loading.hide()
-      serverStatus.value = false;
-      startInterval();
       alert('Saved')
     }
 
@@ -383,6 +381,8 @@ export default defineComponent({
       Loading.show()
       lc.value.updateTools();
       Loading.hide()
+      serverStatus.value = false;
+      startInterval();
       alert('Saved')
     }
 
