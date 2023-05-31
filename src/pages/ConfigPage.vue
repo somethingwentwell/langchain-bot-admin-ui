@@ -425,6 +425,7 @@ export default defineComponent({
         console.log(data.status);
         if (data.status === 'Ready') {
           serverStatus.value = true;
+          getTools();
           stopInterval();
         }
       }, 5000);
