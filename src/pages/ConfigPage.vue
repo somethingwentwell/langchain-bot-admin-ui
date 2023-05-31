@@ -172,7 +172,7 @@
             <q-btn color="red" label="Stop" icon="stop" @click="ops('stop')" />
           </q-btn-group> -->
           <q-btn-group spread>
-            <q-btn color="secondary" label="Restart InSource Server" icon="restart_alt" @click="restart()" />
+            <q-btn color="primary" label="Restart InSource Server" icon="restart_alt" @click="restart()" />
           </q-btn-group>
           <!-- <q-input
             class="q-pa-md"
@@ -184,12 +184,30 @@
           /> -->
           <!-- <q-btn label="Refresh Log" icon="refresh"  @click="getLogs()" /> -->
           <div class="q-py-md">
+            <q-input bottom-slots v-model="chatUrl" label="Chat API URL">
+              <template v-slot:after>
+                <q-btn round dense flat @click="refreshStatus" icon="refresh" />
+              </template>
+            </q-input>
             <q-chip v-if="serverStatus" color="teal" text-color="white" icon="done">
               Server Status: Ready
             </q-chip>
-            <q-chip v-if="!serverStatus" color="orange" text-color="white" icon="refresh">
+            <q-chip v-if="!serverStatus" color="orange" text-color="white" icon="close">
               Server Status: Not Ready
             </q-chip>
+          </div>
+          <div v-if="serverStatus" class="q-py-md">
+            <q-toolbar class="bg-primary text-white shadow-2">
+              <q-toolbar-title>Enabled Tools</q-toolbar-title>
+            </q-toolbar>
+            <q-list bordered separator>
+              <q-item clickable v-ripple v-for="(tool, index) in availableTools" :key="index">
+                <q-item-section>
+                  <q-item-label overline>{{ tool.name }}</q-item-label>
+                  <q-item-label caption>{{ tool.description }}</q-item-label>
+                </q-item-section>
+              </q-item>
+            </q-list>
           </div>
         </q-step>
 
@@ -247,6 +265,8 @@ export default defineComponent({
   setup() {
     const lc = ref(useLcStore());
     const logs = ref('');
+    const chatUrl = ref('');
+    chatUrl.value = localStorage.getItem('chaturl') || '';
     lc.value.getEnv();
     lc.value.getTools();
     lc.value.getFiles();
@@ -263,7 +283,6 @@ export default defineComponent({
     };
 
     const upload = async (file: any, folder: string) => {
-      console.log(file)
       let formdata = new FormData();
       formdata.append('file', file);
       const response = await fetch(`${localStorage.getItem('adminurl')}/upload/${folder}/${subfolder.value}`, {
@@ -345,9 +364,7 @@ export default defineComponent({
 
     const saveChatGPTPlugins = async (plugins: string) => {
       Loading.show()
-      console.log(plugins)
       plugins = plugins.replace(/\n/g, '\\n');
-      console.log(plugins)
       const response = await fetch(`${localStorage.getItem('adminurl')}/chatgptplugins/`, {
         method: 'POST',
         headers: {
@@ -357,6 +374,8 @@ export default defineComponent({
         body: `{"plugins": "${plugins}"}`
       });
       Loading.hide()
+      serverStatus.value = false;
+      startInterval();
       alert('Saved')
     }
 
@@ -366,6 +385,22 @@ export default defineComponent({
       Loading.hide()
       alert('Saved')
     }
+
+    const availableTools = ref([])
+
+    const getTools = async () => {
+      const response = await fetch(`${localStorage.getItem('chaturl')}/tools/`, {
+        method: 'GET',
+        headers: {
+          'Content-Type': 'application/json',
+          'Access-Control-Allow-Origin': '*'
+        }
+      });
+      let res = await response.json();
+      availableTools.value = res.tools;
+    }
+
+    getTools();
 
     // getLogs();
 
@@ -383,7 +418,7 @@ export default defineComponent({
             'Access-Control-Allow-Origin': '*'
           },
           body: JSON.stringify({
-            url: localStorage.getItem('chaturl')
+            url: chatUrl.value
           })
         });
         const data = await response.json();
@@ -397,7 +432,13 @@ export default defineComponent({
 
     const stopInterval = () => {
       clearInterval(intervalId);
-    }    
+    }
+
+    const refreshStatus = () => {
+      console.log('Refreshing: ' + chatUrl.value);
+      clearInterval(intervalId);
+      startInterval();
+    }
 
     startInterval();
 
@@ -416,7 +457,10 @@ export default defineComponent({
       restart,
       chatgptPlugins,
       saveChatGPTPlugins,
-      serverStatus
+      serverStatus,
+      availableTools,
+      chatUrl,
+      refreshStatus
     };
   }
 });

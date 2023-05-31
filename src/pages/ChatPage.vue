@@ -1,5 +1,6 @@
 <template>
     <q-page>
+
         <div class="q-pa-md row justify-center">
             <q-input
                 style="width: 100%; max-width: 600px;"
@@ -10,7 +11,7 @@
             </q-input>
         </div>
         <div class="q-pa-md row justify-center">
-            <q-scroll-area style="height: 60vh; width: 100%; max-width: 600px;"
+            <q-scroll-area style="height: 60vh; width: 100%; max-width: 600px; border: 1px solid grey;"
                 ref="scrollAreaRef"
             >
                 <q-chat-message
@@ -22,7 +23,8 @@
                     :sent="message.sent"
                     :bg-color="message.color"
                 />
-                <q-chat-message name="InSource" v-if="running">
+                <q-chat-message name="InSource" v-if="running"
+                    class="q-pa-md">
                     <q-spinner-dots size="2rem" />
                 </q-chat-message>
             </q-scroll-area>
@@ -30,7 +32,7 @@
         <div class="q-pa-md row justify-center">
             <q-input
                 style="width: 100%; max-width: 600px;"
-                filled
+                outlined
                 v-model="message"
                 @keyup.enter="sendMessage"
                 placeholder="Type your message here"
@@ -40,7 +42,7 @@
                 </template>
             </q-input>
         </div>
-        
+
     </q-page>
 </template>
 
@@ -101,7 +103,7 @@ export default defineComponent({
                 if (res.callback) {
                     if (res.callback === 'on_agent_action') {
                         conversation.value.push({
-                            name: 'InSource',
+                            name: 'InSource (Thought)',
                             text: res.thought[2],
                             color: 'orange'
                         });
@@ -109,7 +111,7 @@ export default defineComponent({
                     if (res.callback === 'on_agent_finish') {
                         if (res.thought[1] != '') {
                             conversation.value.push({
-                                name: 'InSource',
+                                name: 'InSource (Thought)',
                                 text: res.thought[1],
                                 color: 'orange'
                             });
