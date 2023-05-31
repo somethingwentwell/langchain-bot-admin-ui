@@ -266,6 +266,8 @@ export default defineComponent({
     const lc = ref(useLcStore());
     const logs = ref('');
     const chatUrl = ref('');
+    let serverStatus = ref(false)
+    let intervalId: any;
     chatUrl.value = localStorage.getItem('chaturl') || '';
     lc.value.getEnv();
     lc.value.getTools();
@@ -403,11 +405,6 @@ export default defineComponent({
     getTools();
 
     // getLogs();
-
-
-    let serverStatus = ref(false)
-
-    let intervalId: any;
 
     const startInterval = () => {
       intervalId = setInterval(async () => {
