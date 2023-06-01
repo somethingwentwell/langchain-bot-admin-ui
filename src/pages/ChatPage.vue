@@ -11,7 +11,7 @@
             </q-input>
         </div>
         <div class="q-pa-md row justify-center">
-            <q-scroll-area style="height: 60vh; width: 100%; max-width: 600px; border: 1px solid grey;"
+            <q-scroll-area style="height: 60vh; width: 100%; max-width: 600px; border: 1px solid grey; border-radius: 5px;"
                 ref="scrollAreaRef"
             >
                 <q-chat-message

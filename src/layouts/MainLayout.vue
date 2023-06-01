@@ -41,7 +41,17 @@
               </q-item-section>
 
               <q-item-section>
-                Logs
+                Chat History
+              </q-item-section>
+            </q-item>
+
+            <q-item clickable v-ripple @click="$router.replace('/log')">
+              <q-item-section avatar>
+                <q-icon name="summarize" />
+              </q-item-section>
+
+              <q-item-section>
+                Log
               </q-item-section>
             </q-item>
 
