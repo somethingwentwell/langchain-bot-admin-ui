@@ -114,6 +114,9 @@
                               :key="file"
                                v-ripple >
                               <q-item-section>{{ file }}</q-item-section>
+                              <q-item-section side>
+                                <q-btn dense flat icon="delete" @click="deleteFile(props.row.name, folder.subfolder, file)" />
+                              </q-item-section>
                             </q-item>
                           </q-list>
                         </div>
@@ -388,6 +391,21 @@ export default defineComponent({
       alert('Saved')
     }
 
+    const deleteFile = async (filetype: string, subfoler: string, filename: string) => {
+      console.log(filetype, subfoler, filename);
+      const response = await fetch(`${localStorage.getItem('adminurl')}/delete/${filetype}/${subfoler}/${filename}`, {
+        method: 'DELETE',
+        headers: {
+          'Content-Type': 'application/json',
+          'Access-Control-Allow-Origin': '*'
+        }
+      });
+      if (response.status === 200) {
+        alert('Deleted');
+      }
+      lc.value.getFiles();
+    }
+
     const availableTools = ref([])
 
     const getTools = async () => {
@@ -458,7 +476,8 @@ export default defineComponent({
       serverStatus,
       availableTools,
       chatUrl,
-      refreshStatus
+      refreshStatus,
+      deleteFile
     };
   }
 });
