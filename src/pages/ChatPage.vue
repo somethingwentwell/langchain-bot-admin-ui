@@ -99,6 +99,7 @@ export default defineComponent({
                     if (scrollAreaRef.value) {
                         (scrollAreaRef.value as any)?.setScrollPercentage('vertical', 2);
                     }
+                    running.value = false;
                 }
                 if (res.callback) {
                     if (res.callback === 'on_agent_action') {
@@ -107,6 +108,7 @@ export default defineComponent({
                             text: res.thought[2],
                             color: 'orange'
                         });
+                        running.value = true;
                     }
                     if (res.callback === 'on_agent_finish') {
                         if (res.thought[1] != '') {
