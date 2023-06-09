@@ -252,6 +252,9 @@ const rows = [
     name: 'csvs',
   },
   {
+    name: 'words',
+  },
+  {
     name: 'pdfs',
   },
   {
@@ -447,7 +450,10 @@ export default defineComponent({
     }
 
     const stopInterval = () => {
-      clearInterval(intervalId);
+      let intervalId = window.setInterval(() => {return}, 9999);
+      for (let i = intervalId; i > 0; i--) {
+        window.clearInterval(i);
+      }
     }
 
     const refreshStatus = () => {

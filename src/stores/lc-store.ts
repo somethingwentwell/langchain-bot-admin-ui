@@ -88,9 +88,7 @@ export const useLcStore = defineStore('lcadmin', {
           }
         });
         const all_tools = await response2.json();
-        console.log(all_tools)
         for (const tool of all_tools) {
-          console.log(tool)
           this.toolsVar[tool] = false;
           if (toggle_tools.tools.includes(tool)) {
             this.toolsVar[tool] = true;
