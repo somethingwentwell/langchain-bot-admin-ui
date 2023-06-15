@@ -105,7 +105,7 @@ export default defineComponent({
                     if (res.callback === 'on_agent_action') {
                         conversation.value.push({
                             name: 'InSource (Thought)',
-                            text: res.thought[2],
+                            text: res.thought,
                             color: 'orange'
                         });
                         running.value = true;
