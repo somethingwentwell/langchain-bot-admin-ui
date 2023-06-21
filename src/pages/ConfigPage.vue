@@ -64,6 +64,27 @@
           </div>
           
 
+             <div v-if="lc.toolsVar['aoaiondatatool']" class="q-pa-md">
+                <q-input
+                  class="q-pa-xs"
+                  label="AZURE COGNITIVE SEARCH URL"
+                  v-model="lc.envVar['AZURE_COGNITIVE_SEARCH_URL']"
+                  outlined
+                />
+                <q-input
+                  class="q-pa-xs"
+                  label="AZURE COGNITIVE SEARCH KEY"
+                  v-model="lc.envVar['AZURE_COGNITIVE_SEARCH_KEY']"
+                  outlined
+                />
+                <q-input
+                  class="q-pa-xs"
+                  label="AZURE COGNITIVE SEARCH INDEX NAME"
+                  v-model="lc.envVar['AZURE_COGNITIVE_SEARCH_INDEX_NAME']"
+                  outlined
+                />
+            </div>
+
             <div v-if="lc.toolsVar['docsimport']" class="q-pa-md">
               <q-table
                 flat bordered
@@ -161,7 +182,7 @@
                 @click="saveChatGPTPlugins(chatgptPlugins)"
               />
             </div>
-            <q-btn label="Save" @click="saveTools()" class="q-mt-md" />
+            <q-btn label="Save" @click="saveTools(); submitForm();" class="q-mt-md" />
         </q-step>
 
         <q-step
@@ -287,7 +308,7 @@ export default defineComponent({
       Loading.show()
       lc.value.putEnv();
       Loading.hide()
-      alert('Saved')
+      alert('Env Saved')
     };
 
     const upload = async (file: any, folder: string) => {
@@ -382,7 +403,7 @@ export default defineComponent({
         body: `{"plugins": "${plugins}"}`
       });
       Loading.hide()
-      alert('Saved')
+      alert('ChatGPTPlugins Saved')
     }
 
     const saveTools = async () => {
@@ -391,7 +412,7 @@ export default defineComponent({
       Loading.hide()
       serverStatus.value = false;
       startInterval();
-      alert('Saved')
+      alert('Tool Saved')
     }
 
     const deleteFile = async (filetype: string, subfoler: string, filename: string) => {
