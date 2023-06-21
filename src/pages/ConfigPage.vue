@@ -79,6 +79,12 @@
                 />
                 <q-input
                   class="q-pa-xs"
+                  label="AZURE COGNITIVE SEARCH DESCRIPTION"
+                  v-model="lc.envVar['AZURE_COGNITIVE_SEARCH_DESC']"
+                  outlined
+                />
+                <q-input
+                  class="q-pa-xs"
                   label="AZURE COGNITIVE SEARCH INDEX NAME"
                   v-model="lc.envVar['AZURE_COGNITIVE_SEARCH_INDEX_NAME']"
                   outlined
