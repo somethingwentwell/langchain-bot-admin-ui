@@ -188,7 +188,7 @@
                 @click="saveChatGPTPlugins(chatgptPlugins)"
               />
             </div>
-            <q-btn label="Save" @click="saveTools(); submitForm();" class="q-mt-md" />
+            <q-btn label="Save" @click="saveTools();" class="q-mt-md" />
         </q-step>
 
         <q-step
@@ -415,6 +415,7 @@ export default defineComponent({
     const saveTools = async () => {
       Loading.show()
       lc.value.updateTools();
+      lc.value.putEnv();
       Loading.hide()
       serverStatus.value = false;
       startInterval();
