@@ -1,5 +1,5 @@
 # Use the official Node.js 14 image
-FROM node:14
+FROM node:18
 
 ARG HOST_URL=http://localhost
 ENV HOST_URL=${HOST_URL}
