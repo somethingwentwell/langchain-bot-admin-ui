@@ -55,6 +55,17 @@
               </q-item-section>
             </q-item>
 
+            <q-item clickable v-ripple @click="$router.replace('/token')">
+              <q-item-section avatar>
+                <q-icon name="speed" />
+              </q-item-section>
+
+              <q-item-section>
+                Token Counter
+              </q-item-section>
+            </q-item>
+
+
             <q-item clickable v-ripple @click="$router.replace('/config')">
               <q-item-section avatar>
                 <q-icon name="toggle_on" />

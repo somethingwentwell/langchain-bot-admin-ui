@@ -64,7 +64,7 @@
           </div>
           
 
-             <div v-if="lc.toolsVar['aoaiondatatool']" class="q-pa-md">
+             <div v-if="lc.toolsVar['aoai_on_data']" class="q-pa-md">
                 <q-input
                   class="q-pa-xs"
                   label="AZURE COGNITIVE SEARCH URL"
@@ -91,7 +91,7 @@
                 />
             </div>
 
-            <div v-if="lc.toolsVar['docsimport']" class="q-pa-md">
+            <div v-if="lc.toolsVar['document_import']" class="q-pa-md">
               <q-table
                 flat bordered
                 title="Upload docs"
@@ -166,14 +166,14 @@
 
               </q-table>
             </div>
-            <div class="q-pa-md" v-if="lc.toolsVar['zapiertool']">
+            <div class="q-pa-md" v-if="lc.toolsVar['zapier']">
               <q-btn
                 color="secondary"
                 label="Open Zapier NLA"
                 @click="openZapier"
               />
             </div>
-            <div class="q-pa-md" v-if="lc.toolsVar['chatgptplugins']">
+            <div class="q-pa-md" v-if="lc.toolsVar['chatgpt_plugins']">
               <q-input
                 label="ChatGPT Plugins"
                 class="q-py-md"
@@ -283,6 +283,9 @@ const rows = [
   },
   {
     name: 'pdfs',
+  },
+  {
+    name: 'xmls',
   },
   {
     name: 'htmls',

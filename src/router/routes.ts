@@ -21,6 +21,11 @@ const routes: RouteRecordRaw[] = [
     component: () => import('layouts/MainLayout.vue'),
     children: [{ path: '', component: () => import('pages/LogPage.vue') }],
   },
+  {
+    path: '/token',
+    component: () => import('layouts/MainLayout.vue'),
+    children: [{ path: '', component: () => import('pages/TokenPage.vue') }],
+  },
 
   // Always leave this as last one,
   // but you can also remove it
