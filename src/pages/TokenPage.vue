@@ -1,12 +1,12 @@
 <template>
     <q-page>
         <div class="q-pa-md row justify-center">
-            <div class="col-12 q-pa-md">
+            <!-- <div class="col-12 q-pa-md">
                 <q-btn
                 color="red"
                 label="Reset Token Count"
                 @click="resetTokenCount"/>
-            </div>
+            </div> -->
             <div class="col-12 q-pa-md">
                 <q-table
                 :title="'Tokens Used: ' + (totalTokens.all_token_used as string)"
@@ -35,7 +35,7 @@ export default defineComponent({
 
 
         const getTotalTokens = async () => {
-            const response = await fetch(`${localStorage.getItem('adminurl')}/all_token_used`, {
+            const response = await fetch(`${localStorage.getItem('adminurl')}/all_token_used/month`, {
               method: 'GET'
             });
             const data = await response.json();
@@ -43,22 +43,22 @@ export default defineComponent({
         };
 
         const getTotalCount = async () => {
-            const response = await fetch(`${localStorage.getItem('adminurl')}/token_count`, {
+            const response = await fetch(`${localStorage.getItem('adminurl')}/token_count/month`, {
               method: 'GET'
             });
             const data = await response.json();
             tokenCount.value = data;
         };
 
-        const resetTokenCount = async () => {
-            const response = await fetch(`${localStorage.getItem('adminurl')}/reset_token`, {
-              method: 'PUT'
-            });
-            const data = await response.json();
-            console.log(data)
-            getTotalTokens();
-            getTotalCount();
-        };
+        // const resetTokenCount = async () => {
+        //     const response = await fetch(`${localStorage.getItem('adminurl')}/reset_token`, {
+        //       method: 'PUT'
+        //     });
+        //     const data = await response.json();
+        //     console.log(data)
+        //     getTotalTokens();
+        //     getTotalCount();
+        // };
 
         getTotalTokens();
         getTotalCount();
@@ -66,7 +66,7 @@ export default defineComponent({
         return {
             totalTokens,
             tokenCount,
-            resetTokenCount
+            // resetTokenCount
         };
     }
 });
